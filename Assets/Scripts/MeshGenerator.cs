@@ -13,9 +13,9 @@ public class MeshGenerator : MonoBehaviour
     private ComputeBuffer triangleBuffer;
     private ComputeBuffer triCountBuffer;
 
-    private int numPoints => World.Settings.numPoints;
-    private int maxTriangleCount => World.Settings.maxTriangleCount;
-    private int numThreadsPerAxis => World.Settings.numThreadsPerAxis;
+    private int numPoints => World.WorldGenSettings.numPoints;
+    private int maxTriangleCount => World.WorldGenSettings.maxTriangleCount;
+    private int numThreadsPerAxis => World.WorldGenSettings.numThreadsPerAxis;
 
     void Awake()
     {
@@ -57,7 +57,7 @@ public class MeshGenerator : MonoBehaviour
         triangleBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(0, "points", pointsBuffer);
         marchingCubesShader.SetBuffer(0, "triangles", triangleBuffer);
-        marchingCubesShader.SetInt("numPointsPerAxis", World.Settings.numPointsPerAxis);
+        marchingCubesShader.SetInt("numPointsPerAxis", World.WorldGenSettings.numPointsPerAxis);
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
 
         marchingCubesShader.Dispatch(0, numThreadsPerAxis, numThreadsPerAxis, numThreadsPerAxis);
@@ -101,7 +101,7 @@ public class MeshGenerator : MonoBehaviour
             triangleBuffer = new ComputeBuffer (maxTriangleCount, sizeof (float) * 3 * 3, ComputeBufferType.Append);
             pointsBuffer = new ComputeBuffer (numPoints, sizeof (float) * 4);
             triCountBuffer = new ComputeBuffer (1, sizeof (int), ComputeBufferType.Raw);
-            
+
             _isReady = true;
         }
     }

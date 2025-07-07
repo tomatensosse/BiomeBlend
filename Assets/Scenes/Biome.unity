@@ -429,7 +429,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1d381cf937b9b92428090219acbb9a3e, type: 2}
   biomeNoiseScale: 0.3
   setSeed: 0
-  worldSize: {x: 1, y: 1, z: 1}
+  worldSize: {x: 2, y: 1, z: 2}
   chunkSize: 8
   numPointsPerAxis: 4
 --- !u!4 &428686910
@@ -525,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3ba950f68a768e4fb1d8d4edca3403f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateMesh: 0
+  generateMesh: 1
   saveDensities: 1
   showDensities: 1
 --- !u!4 &1627620862

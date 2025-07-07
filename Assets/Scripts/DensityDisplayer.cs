@@ -24,9 +24,9 @@ public class DensityDisplayer : MonoBehaviour
 
     public void DisplayDensities(Chunk chunk, float[,,] densities)
     {
-        Vector3 basePosition = chunk.transform.position - (Vector3.one * World.Settings.chunkSize / 2f);
-        float spacing = World.Settings.pointSpacing;
-        int numPointsPerAxis = World.Settings.numPointsPerAxis;
+        Vector3 basePosition = chunk.transform.position - (Vector3.one * World.WorldGenSettings.chunkSize / 2f);
+        float spacing = World.WorldGenSettings.pointSpacing;
+        int numPointsPerAxis = World.WorldGenSettings.numPointsPerAxis;
 
         for (int x = 0; x < numPointsPerAxis; x++)
         {

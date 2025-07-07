@@ -21,9 +21,9 @@ public abstract class BiomeShader
 
     public void SetBaseParameters()
     {
-        shader.SetFloat("boundsSize", World.Settings.boundsSize);
-        shader.SetFloat("spacing", World.Settings.pointSpacing);
-        shader.SetVector("worldSize", World.Settings.worldSize);
+        shader.SetFloat("boundsSize", World.WorldGenSettings.boundsSize);
+        shader.SetFloat("spacing", World.WorldGenSettings.pointSpacing);
+        shader.SetVector("worldSize", (Vector3)World.WorldGenSettings.worldSize);
 
         shader.SetVector("offset", offset);
 
@@ -42,8 +42,8 @@ public abstract class BiomeShader
 
     public void GenerateDynamicParameters()
     {
-        numPointsPerAxis = World.Settings.numPointsPerAxis;
-        threadGroupSize = World.Settings.threadGroupSize;
+        numPointsPerAxis = World.WorldGenSettings.numPointsPerAxis;
+        threadGroupSize = World.WorldGenSettings.threadGroupSize;
         numThreadsPerAxis = Mathf.CeilToInt(numPointsPerAxis / (float)threadGroupSize);
 
         var prng = new System.Random(World.Seed);
@@ -62,7 +62,7 @@ public abstract class BiomeShader
         this.offsetsBuffer = offsetsBuffer;
 
         // POINTS BUFFER IS IMPORTANT ; RETURNS THE DENSITIES
-        pointsBuffer = new ComputeBuffer(World.Settings.numPointsPerAxis * World.Settings.numPointsPerAxis * World.Settings.numPointsPerAxis, sizeof(float) * 4);
+        pointsBuffer = new ComputeBuffer(World.WorldGenSettings.numPointsPerAxis * World.WorldGenSettings.numPointsPerAxis * World.WorldGenSettings.numPointsPerAxis, sizeof(float) * 4);
     }
 
     public void Dispatch(Vector3 worldPositionOfChunk)

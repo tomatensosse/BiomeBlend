@@ -31,7 +31,7 @@ MonoBehaviour:
         lacunarity: 8
         persistence: 8
         noiseScale: 0.5
-        noiseWeight: 1
+        noiseWeight: 2
         closeEdges: 0
         floorOffset: 0
         weightMultiplier: 1

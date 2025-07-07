@@ -13,9 +13,6 @@ public class ChunkGenerator : MonoBehaviour
 
     public bool generateMesh = true;
 
-    public bool saveDensities = false;
-
-    [ShowIf("saveDensities")]
     public bool showDensities = false;
 
     private int staticSizeState = -1;
@@ -62,7 +59,7 @@ public class ChunkGenerator : MonoBehaviour
 
         World.Instance.GenerateConstants();
 
-        Vector3 worldSize = World.Settings.worldSize;
+        Vector3Int worldSize = World.WorldGenSettings.worldSize;
 
         for (int x = 0; x < worldSize.x; x++)
         {
@@ -75,6 +72,8 @@ public class ChunkGenerator : MonoBehaviour
             }
         }
 
+        FindNeighbors();
+
         isBusy = false;
     }
 
@@ -83,7 +82,7 @@ public class ChunkGenerator : MonoBehaviour
         if (chunks.ContainsKey(position)) return;
 
         GameObject chunk = new GameObject($"Chunk - ( {position.x} |  {position.y} | {position.z} )");
-        chunk.transform.position = World.Settings.chunkSize * position;
+        chunk.transform.position = World.WorldGenSettings.chunkSize * position;
         chunk.transform.SetParent(transform);
 
         Chunk chunkComponent = chunk.AddComponent<Chunk>();
@@ -93,7 +92,7 @@ public class ChunkGenerator : MonoBehaviour
         chunkComponent.chunkPosition = position;
         chunkComponent.Initialize();
 
-        chunkComponent.GenerateDensity(saveDensities, showDensities);
+        chunkComponent.GenerateDensity(showDensities);
 
         if (generateMesh)
         {
@@ -114,5 +113,13 @@ public class ChunkGenerator : MonoBehaviour
         }
 
         chunks.Clear();
+    }
+
+    private void FindNeighbors()
+    {
+        foreach (var chunk in chunks.Values)
+        {
+            chunk.FindNeighbors();
+        }
     }
 }

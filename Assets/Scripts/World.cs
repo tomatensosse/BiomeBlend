@@ -4,7 +4,7 @@ using UnityEngine;
 public class World : MonoBehaviour
 {
     public static World Instance { get; private set; }
-    public static WorldSettings Settings => Instance._worldSettings;
+    public static WorldGenSettings WorldGenSettings => Instance._worldGenSettings;
     public static int Seed => Instance._seed;
     public static bool IsReady => Instance._isReady;
 
@@ -24,29 +24,7 @@ public class World : MonoBehaviour
 
     public const int threadGroupSize = 8;
 
-    public struct WorldSettings
-    {
-        public int chunkSize;
-
-        // Values that will be used by generators (MeshGenerator, DensityNode, etc...)
-
-        // Storing them in a struct so they can be accessed from anywhere +
-        // multiplayer structure will be MUCH easier to implement
-
-        public int numPoints;
-        public int numPointsPerAxis;
-        public int numVoxelsPerAxis;
-        public int numVoxels;
-        public int numThreadsPerAxis;
-        public int maxTriangleCount;
-        public int boundsSize;
-        public float pointSpacing;
-        public Vector3 worldSize;
-
-        public int threadGroupSize;
-    }
-
-    private WorldSettings _worldSettings;
+    private WorldGenSettings _worldGenSettings;
 
     void Awake()
     {
@@ -71,9 +49,7 @@ public class World : MonoBehaviour
         int numVoxels = numPointsPerAxis * numPointsPerAxis * numPointsPerAxis;
         int maxTriangleCount = numVoxels * 5;
 
-        Vector3 worldBounds = worldSize;
-
-        _worldSettings = new WorldSettings
+        _worldGenSettings = new WorldGenSettings
         {
             chunkSize = chunkSize,
             numPoints = numPointsPerAxis * numPointsPerAxis * numPointsPerAxis,
@@ -84,7 +60,7 @@ public class World : MonoBehaviour
             numThreadsPerAxis = Mathf.CeilToInt((float)numVoxelsPerAxis / threadGroupSize),
             boundsSize = chunkSize,
             pointSpacing = chunkSize / ((float)numPointsPerAxis - 1),
-            worldSize = worldBounds,
+            worldSize = worldSize,
 
             threadGroupSize = threadGroupSize,
         };
@@ -95,7 +71,7 @@ public class World : MonoBehaviour
     public Biome SampleBiomeForChunk(Vector3Int chunkPosition)
     {
         float treshold = 1.0f / biomes.Count;
-        float noise = Mathf.PerlinNoise(Seed + chunkPosition.x * biomeNoiseScale, Seed + chunkPosition.z * biomeNoiseScale);
+        float noise = Mathf.PerlinNoise(_seed + chunkPosition.x * biomeNoiseScale, _seed + chunkPosition.z * biomeNoiseScale);
 
         for (int i = 0; i < biomes.Count; i++)
         {
