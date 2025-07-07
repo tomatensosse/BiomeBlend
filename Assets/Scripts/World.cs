@@ -95,7 +95,7 @@ public class World : MonoBehaviour
     public Biome SampleBiomeForChunk(Vector3Int chunkPosition)
     {
         float treshold = 1.0f / biomes.Count;
-        float noise = Mathf.PerlinNoise(chunkPosition.x * biomeNoiseScale, chunkPosition.z * biomeNoiseScale);
+        float noise = Mathf.PerlinNoise(Seed + chunkPosition.x * biomeNoiseScale, Seed + chunkPosition.z * biomeNoiseScale);
 
         for (int i = 0; i < biomes.Count; i++)
         {
