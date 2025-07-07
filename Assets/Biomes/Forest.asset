@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e930703fa170d944c9e33a3fe5aa4645, type: 3}
+  m_Name: Forest
+  m_EditorClassIdentifier: 
+  uid: forest
+  biomeName: Forest
+  biomeColor: {r: 0.14060257, g: 1, b: 0.08018869, a: 1}
+  material: {fileID: 2100000, guid: 5e821612378f529469b4ee391348f4b2, type: 2}
+  biomeShader:
+    rid: 4778838341188059136
+  references:
+    version: 2
+    RefIds:
+    - rid: 4778838341188059136
+      type: {class: SimpleNoiseShader, ns: , asm: Assembly-CSharp}
+      data:
+        shader: {fileID: 7200000, guid: 3db601c759a76024ebaa9947b40e7a97, type: 3}
+        offset: {x: 0, y: 0, z: 0}
+        parameters: {x: 1, y: 0, z: 0, w: 0}
+        numOctaves: 2
+        lacunarity: 8
+        persistence: 8
+        noiseScale: 0.5
+        noiseWeight: 1
+        closeEdges: 0
+        floorOffset: 0
+        weightMultiplier: 1
+        hardFloor: 1
+        hardFloorWeight: 1
