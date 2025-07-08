@@ -27,11 +27,11 @@ MonoBehaviour:
         shader: {fileID: 7200000, guid: 3db601c759a76024ebaa9947b40e7a97, type: 3}
         offset: {x: 0, y: 0, z: 0}
         parameters: {x: 1, y: 0, z: 0, w: 0}
-        numOctaves: 2
-        lacunarity: 8
-        persistence: 8
-        noiseScale: 0.5
-        noiseWeight: 2
+        numOctaves: 3
+        lacunarity: 1.68
+        persistence: 3.7
+        noiseScale: 0.3
+        noiseWeight: 2.03
         closeEdges: 0
         floorOffset: 0
         weightMultiplier: 1
