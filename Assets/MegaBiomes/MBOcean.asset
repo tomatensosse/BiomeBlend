@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ee12768cef5d487ba4522ce3d3ab391, type: 3}
+  m_Name: MBOcean
+  m_EditorClassIdentifier: 
+  uid: mb_ocean
+  megaBiomeName: Ocean MegaBiome
+  skyBiome: {fileID: 11400000, guid: 6179531eef7824cc5a7e30efeb45fcb3, type: 2}
+  seaBiome: {fileID: 11400000, guid: 08cc5f1eaf40440b785d3da63545c178, type: 2}
+  cavernBiome: {fileID: 11400000, guid: a4c456d2f516245a388e5369152f948d, type: 2}

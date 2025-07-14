@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MeshGenerator : MonoBehaviour
@@ -13,9 +14,9 @@ public class MeshGenerator : MonoBehaviour
     private ComputeBuffer triangleBuffer;
     private ComputeBuffer triCountBuffer;
 
-    private int numPoints => World.WorldGenSettings.numPoints;
-    private int maxTriangleCount => World.WorldGenSettings.maxTriangleCount;
-    private int numThreadsPerAxis => World.WorldGenSettings.numThreadsPerAxis;
+    private int numPoints => World.Data.worldGenSettings.numPoints;
+    private int maxTriangleCount => World.Data.worldGenSettings.maxTriangleCount;
+    private int numThreadsPerAxis => World.Data.worldGenSettings.numThreadsPerAxis;
 
     void Awake()
     {
@@ -30,6 +31,13 @@ public class MeshGenerator : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitAndCreateBuffers());
+    }
+
+    private IEnumerator WaitAndCreateBuffers()
+    {
+        yield return new WaitUntil(() => World.DataLoaded);
+
         CreateBuffers();
     }
 
@@ -57,7 +65,7 @@ public class MeshGenerator : MonoBehaviour
         triangleBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(0, "points", pointsBuffer);
         marchingCubesShader.SetBuffer(0, "triangles", triangleBuffer);
-        marchingCubesShader.SetInt("numPointsPerAxis", World.WorldGenSettings.numPointsPerAxis);
+        marchingCubesShader.SetInt("numPointsPerAxis", World.Data.worldGenSettings.numPointsPerAxis);
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
 
         marchingCubesShader.Dispatch(0, numThreadsPerAxis, numThreadsPerAxis, numThreadsPerAxis);

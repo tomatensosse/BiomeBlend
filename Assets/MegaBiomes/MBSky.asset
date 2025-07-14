@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f75259094c2f4a7ab0b1bc83426a327, type: 3}
+  m_Name: MBSky
+  m_EditorClassIdentifier: 
+  uid: mb_sky
+  megaBiomeName: Sky MegaBiome
+  skyBiome: {fileID: 11400000, guid: 6179531eef7824cc5a7e30efeb45fcb3, type: 2}

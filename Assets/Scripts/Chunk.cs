@@ -108,32 +108,6 @@ public class Chunk : MonoBehaviour
         isMeshGenerated = true;
     }
 
-    [Button("Log Density Values")]
-    public void LogDensities()
-    {
-        if (densityValues == null || densityValues.Length == 0)
-        {
-            Debug.LogWarning("Density values are not generated or empty.");
-            return;
-        }
-
-        string log = "Density Values for Chunk at " + chunkPosition + ":\n";
-
-        for (int x = 0; x < World.WorldGenSettings.numPointsPerAxis; x++)
-        {
-            for (int y = 0; y < World.WorldGenSettings.numPointsPerAxis; y++)
-            {
-                for (int z = 0; z < World.WorldGenSettings.numPointsPerAxis; z++)
-                {
-                    float densityRounded = Mathf.Round(densityValues[x, y, z] * 10f) / 10f; // Round to 2 decimal places
-                    log += $"({densityRounded}) ";
-                }
-            }
-        }
-
-        Debug.Log(log);
-    }
-
     private void OnDrawGizmos()
     {
         if (!Application.isPlaying)
@@ -146,12 +120,13 @@ public class Chunk : MonoBehaviour
             Gizmos.color = biome.biomeColor;
         }
 
-        Gizmos.DrawWireCube(transform.position, new Vector3(World.WorldGenSettings.chunkSize, World.WorldGenSettings.chunkSize, World.WorldGenSettings.chunkSize));
+        int chunkSize = World.Data.worldGenSettings.chunkSize;
+        Gizmos.DrawWireCube(transform.position, Vector3.one * chunkSize);
     }
 
     private void SaveDensities(ComputeBuffer densityBuffer)
     {
-        int n = World.WorldGenSettings.numPointsPerAxis;
+        int n = World.Data.worldGenSettings.numPointsPerAxis;
         densityValues = new float[n, n, n];
 
         Vector4[] flat = new Vector4[n * n * n];

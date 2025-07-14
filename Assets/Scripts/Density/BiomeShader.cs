@@ -21,9 +21,9 @@ public abstract class BiomeShader
 
     public void SetBaseParameters()
     {
-        shader.SetFloat("boundsSize", World.WorldGenSettings.boundsSize);
-        shader.SetFloat("spacing", World.WorldGenSettings.pointSpacing);
-        shader.SetVector("worldSize", (Vector3)World.WorldGenSettings.worldSize);
+        shader.SetFloat("boundsSize", World.Data.worldGenSettings.boundsSize);
+        shader.SetFloat("spacing", World.Data.worldGenSettings.pointSpacing);
+        shader.SetVector("worldSize", (Vector3)World.Data.worldGenSettings.worldSize);
 
         shader.SetVector("offset", offset);
 
@@ -42,11 +42,11 @@ public abstract class BiomeShader
 
     public void GenerateDynamicParameters()
     {
-        numPointsPerAxis = World.WorldGenSettings.numPointsPerAxis;
-        threadGroupSize = World.WorldGenSettings.threadGroupSize;
+        numPointsPerAxis = World.Data.worldGenSettings.numPointsPerAxis;
+        threadGroupSize = World.Data.worldGenSettings.threadGroupSize;
         numThreadsPerAxis = Mathf.CeilToInt(numPointsPerAxis / (float)threadGroupSize);
 
-        var prng = new System.Random(World.Seed);
+        var prng = new System.Random(World.Data.seed);
         var offsets = new Vector3[numOctaves];
         float offsetRange = 1000;
         for (int i = 0; i < numOctaves; i++)
@@ -62,7 +62,7 @@ public abstract class BiomeShader
         this.offsetsBuffer = offsetsBuffer;
 
         // POINTS BUFFER IS IMPORTANT ; RETURNS THE DENSITIES
-        pointsBuffer = new ComputeBuffer(World.WorldGenSettings.numPointsPerAxis * World.WorldGenSettings.numPointsPerAxis * World.WorldGenSettings.numPointsPerAxis, sizeof(float) * 4);
+        pointsBuffer = new ComputeBuffer(World.Data.worldGenSettings.numPoints, sizeof(float) * 4);
     }
 
     public void Dispatch(Vector3 worldPositionOfChunk)
