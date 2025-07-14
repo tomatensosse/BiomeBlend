@@ -24,7 +24,7 @@ public class MBSky : MegaBiome
 
                     if (worldY >= skyLevel)
                     {
-                        map[x, y, z] = World.Instance.GetBiomeIndex(skyBiome);
+                        map[x, y, z] = World.Instance.GetIndexOfBiome(skyBiome);
                     }
                 }
             }

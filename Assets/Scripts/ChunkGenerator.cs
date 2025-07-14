@@ -120,26 +120,35 @@ public class ChunkGenerator : MonoBehaviour
     {
         if (chunks.ContainsKey(chunkPosition)) return;
 
+        if (!megaChunks.TryGetValue(megaChunkPosition, out MegaChunk megaChunk))
+        {
+            Debug.LogError($"MegaChunk at {megaChunkPosition} does not exist. Try generating it first.");
+            return;
+        }        
+
         GameObject chunk = new GameObject($"Chunk - ( {chunkPosition.x} |  {chunkPosition.y} | {chunkPosition.z} )");
 
         int chunkSize = World.Data.worldGenSettings.chunkSize;
         int megaChunkSize = World.Data.worldGenSettings.megaChunkSize * chunkSize;
 
-        Vector3 megaChunkOffset = new Vector3(
+        Vector3 relativeChunkOffset = new Vector3(
             megaChunkPosition.x * megaChunkSize,
             megaChunkPosition.y * megaChunkSize,
             megaChunkPosition.z * megaChunkSize
         );
 
+        Vector3 megaChunkOffset = Vector3.one * (megaChunkSize / 2f);
+
         Vector3 chunkOffset = Vector3.one * (chunkSize / 2f);
 
-        chunk.transform.position = (chunkSize * chunkPosition) + megaChunkOffset + chunkOffset;
-        chunk.transform.SetParent(transform);
+        chunk.transform.position = (chunkSize * chunkPosition) + relativeChunkOffset + chunkOffset - megaChunkOffset;
+        chunk.transform.SetParent(megaChunk.transform);
 
         Chunk chunkComponent = chunk.AddComponent<Chunk>();
 
-        //chunkComponent.biome = World.Instance.SampleBiomeForChunk(position);
-        //chunkComponent.biome = MapGenerator.Instance.SampleBiome(position);
+        int biomeIndex = megaChunk.map[chunkPosition.x, chunkPosition.y, chunkPosition.z];
+
+        chunkComponent.biome = World.Instance.GetBiomeOfIndex(biomeIndex);
 
         chunkComponent.chunkPosition = chunkPosition;
         chunkComponent.Initialize();
@@ -277,11 +286,11 @@ public class ChunkGenerator : MonoBehaviour
 
     private bool ChunkOutOfBounds(Vector3Int chunkPosition)
     {
-        int megaChunkSizeHalved = World.Data.worldGenSettings.megaChunkSize / 2;
+        int megaChunkSize = World.Data.worldGenSettings.megaChunkSize;
 
-        return chunkPosition.x < -megaChunkSizeHalved || chunkPosition.x >= megaChunkSizeHalved ||
-               chunkPosition.y < -megaChunkSizeHalved || chunkPosition.y >= megaChunkSizeHalved ||
-               chunkPosition.z < -megaChunkSizeHalved || chunkPosition.z >= megaChunkSizeHalved;
+        return chunkPosition.x < 0 || chunkPosition.x >= megaChunkSize ||
+               chunkPosition.y < 0 || chunkPosition.y >= megaChunkSize ||
+               chunkPosition.z < 0 || chunkPosition.z >= megaChunkSize;
     }
 
     private bool ChunkExistsAt(Vector3Int chunkPosition)

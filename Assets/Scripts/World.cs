@@ -72,6 +72,20 @@ public class World : MonoBehaviour
             _worldData.worldGenSettingsGenerated = true;
         }
 
+        foreach (string uidBiome in _worldData.worldBiomes.biomes)
+        {
+            Biome biome = Game.Biomes.Find(b => b.uid == uidBiome);
+
+            if (biome != null)
+            {
+                _biomes.Add(biome);
+            }
+            else
+            {
+                Debug.LogWarning($"Biome with UID {uidBiome} not found in Game.Biomes.");
+            }
+        }
+
         Debug.Log($"Loaded world: {_worldData.worldName} (UID: {_worldData.uid}, Seed: {_worldData.seed})");
 
         _dataLoaded = true;
@@ -128,11 +142,12 @@ public class World : MonoBehaviour
             megaChunkPosition.z * megaChunkSize
         );
 
-        float offset = chunkSize / 2f;
+        float offset = megaChunkSize / 2f;
+
         return new Vector3Int(
-            Mathf.FloorToInt((worldPosition.x - megaChunkOffset.x) / chunkSize),
-            Mathf.FloorToInt((worldPosition.y - megaChunkOffset.y) / chunkSize),
-            Mathf.FloorToInt((worldPosition.z - megaChunkOffset.z) / chunkSize)
+            Mathf.FloorToInt((worldPosition.x - megaChunkOffset.x + offset) / chunkSize),
+            Mathf.FloorToInt((worldPosition.y - megaChunkOffset.y + offset) / chunkSize),
+            Mathf.FloorToInt((worldPosition.z - megaChunkOffset.z + offset) / chunkSize)
         );
     }
 
@@ -147,9 +162,19 @@ public class World : MonoBehaviour
         );
     }
 
-    public int GetBiomeIndex(Biome biome)
+    public int GetIndexOfBiome(Biome biome)
     {
         return _biomes.IndexOf(biome);
+    }
+
+    public Biome GetBiomeOfIndex(int index)
+    {
+        if (index < 0 || index >= _biomes.Count)
+        {
+            Debug.LogError($"Biome index {index} is out of bounds. Returning null.");
+            return null;
+        }
+        return _biomes[index];
     }
 
     public MegaBiome GetMegaBiome(Vector3Int megaBiomePosition)

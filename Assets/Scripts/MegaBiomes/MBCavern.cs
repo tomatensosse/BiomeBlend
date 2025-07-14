@@ -25,7 +25,7 @@ public class MBCavern : MegaBiome
 
                     if (worldY >= cavernLevel)
                     {
-                        map[x, y, z] = World.Instance.GetBiomeIndex(cavernBiome);
+                        map[x, y, z] = World.Instance.GetIndexOfBiome(cavernBiome);
                     }
                 }
             }

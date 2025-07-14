@@ -30,15 +30,21 @@ public class MBOcean : MegaBiome
 
                     if (worldY >= skyLevel)
                     {
-                        map[x, y, z] = World.Instance.GetBiomeIndex(skyBiome);
+                        map[x, y, z] = World.Instance.GetIndexOfBiome(skyBiome);
+
+                        Debug.Log("Sky: " + map[x, y, z]);
                     }
                     else if (worldY >= seaLevel)
                     {
-                        map[x, y, z] = World.Instance.GetBiomeIndex(seaBiome);
+                        map[x, y, z] = World.Instance.GetIndexOfBiome(seaBiome);
+
+                        Debug.Log("Sea: " + map[x, y, z]);
                     }
                     else if (worldY >= cavernLevel)
                     {
-                        map[x, y, z] = World.Instance.GetBiomeIndex(cavernBiome);
+                        map[x, y, z] = World.Instance.GetIndexOfBiome(cavernBiome);
+
+                        Debug.Log("Cavern: " + map[x, y, z]);
                     }
                 }
             }
