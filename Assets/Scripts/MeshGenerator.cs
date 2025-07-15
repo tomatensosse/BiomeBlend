@@ -14,9 +14,17 @@ public class MeshGenerator : MonoBehaviour
     private ComputeBuffer triangleBuffer;
     private ComputeBuffer triCountBuffer;
 
+    /*
     private int numPoints => World.Data.worldGenSettings.numPoints;
+    private int numPointsPerAxis => World.Data.worldGenSettings.numPointsPerAxis;
     private int maxTriangleCount => World.Data.worldGenSettings.maxTriangleCount;
     private int numThreadsPerAxis => World.Data.worldGenSettings.numThreadsPerAxis;
+    */
+
+    private int numPoints => DemoGenerator.Instance.numPoints;
+    private int numPointsPerAxis => DemoGenerator.Instance.numPointsPerAxis;
+    private int maxTriangleCount => DemoGenerator.Instance.maxTriangleCount;
+    private int numThreadsPerAxis => DemoGenerator.Instance.numThreadsPerAxisV;
 
     void Awake()
     {
@@ -36,7 +44,8 @@ public class MeshGenerator : MonoBehaviour
 
     private IEnumerator WaitAndCreateBuffers()
     {
-        yield return new WaitUntil(() => World.DataLoaded);
+        //yield return new WaitUntil(() => World.DataLoaded);
+        yield return new WaitUntil(() => DemoGenerator.Instance != null);
 
         CreateBuffers();
     }
@@ -65,7 +74,7 @@ public class MeshGenerator : MonoBehaviour
         triangleBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(0, "points", pointsBuffer);
         marchingCubesShader.SetBuffer(0, "triangles", triangleBuffer);
-        marchingCubesShader.SetInt("numPointsPerAxis", World.Data.worldGenSettings.numPointsPerAxis);
+        marchingCubesShader.SetInt("numPointsPerAxis", numPointsPerAxis);
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
 
         marchingCubesShader.Dispatch(0, numThreadsPerAxis, numThreadsPerAxis, numThreadsPerAxis);

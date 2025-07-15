@@ -107,13 +107,15 @@ public class ChunkGenerator : MonoBehaviour
                     {
                         continue; // Skip if chunk already exists
                     }
-                    
+
                     GenerateChunk(megaChunkPosition, position);
                 }
             }
         }
 
         HandleDirtyChunks();
+
+        GenerateBlendChunks();
     }
 
     private void GenerateChunk(Vector3Int megaChunkPosition, Vector3Int chunkPosition)
@@ -124,7 +126,15 @@ public class ChunkGenerator : MonoBehaviour
         {
             Debug.LogError($"MegaChunk at {megaChunkPosition} does not exist. Try generating it first.");
             return;
-        }        
+        }
+
+        int biomeIndex = megaChunk.map[chunkPosition.x, chunkPosition.y, chunkPosition.z];
+
+        if (biomeIndex == -2)
+        {
+            Debug.LogError("Empty chunk detected at " + chunkPosition + ". Skipping generation.");
+            return;
+        }
 
         GameObject chunk = new GameObject($"Chunk - ( {chunkPosition.x} |  {chunkPosition.y} | {chunkPosition.z} )");
 
@@ -144,26 +154,43 @@ public class ChunkGenerator : MonoBehaviour
         chunk.transform.position = (chunkSize * chunkPosition) + relativeChunkOffset + chunkOffset - megaChunkOffset;
         chunk.transform.SetParent(megaChunk.transform);
 
-        Chunk chunkComponent = chunk.AddComponent<Chunk>();
+        Chunk chunkComponent;
 
-        int biomeIndex = megaChunk.map[chunkPosition.x, chunkPosition.y, chunkPosition.z];
+        if (biomeIndex == -1)
+        {
+            // Generate blend chunk
+            chunkComponent = chunk.AddComponent<BlendChunk>();
+            chunkComponent.chunkPosition = chunkPosition;
 
-        chunkComponent.biome = World.Instance.GetBiomeOfIndex(biomeIndex);
+            chunkComponent.Initialize();
+        }
+        else
+        {
+            // Generate biome chunk
+            chunkComponent = chunk.AddComponent<BiomeChunk>();
+            chunkComponent.chunkPosition = chunkPosition;
 
-        chunkComponent.chunkPosition = chunkPosition;
-        chunkComponent.Initialize();
+            GenerateBiomeChunk(chunkComponent as BiomeChunk, biomeIndex);
+        }
+    }
+
+    private void GenerateBiomeChunk(BiomeChunk biomeChunk, int biomeIndex)
+    {
+        biomeChunk.biome = World.Instance.GetBiomeOfIndex(biomeIndex);
+
+        biomeChunk.Initialize();
 
         if (generateDensities)
         {
-            chunkComponent.GenerateDensity(showDensities);
+            biomeChunk.GenerateDensity(showDensities);
         }
 
         if (generateDensities && generateMesh)
         {
-            chunkComponent.GenerateMesh();
+            biomeChunk.GenerateMesh();
         }
 
-        chunks.Add(chunkPosition, chunkComponent);
+        chunks.Add(biomeChunk.chunkPosition, biomeChunk);
     }
 
     private void GenerateMegaChunk(Vector3Int megaChunkPosition)
@@ -218,6 +245,11 @@ public class ChunkGenerator : MonoBehaviour
 
             Destroy(chunkGameObject);
         }
+    }
+
+    private void GenerateBlendChunks()
+    {
+        // LOL
     }
 
     private void HandleDirtyMegaChunks()

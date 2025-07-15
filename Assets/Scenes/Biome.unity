@@ -441,7 +441,7 @@ MonoBehaviour:
   - {fileID: 330585549}
   _renderDistance: {x: 3, y: 1, z: 3}
   air: {fileID: 11400000, guid: abd7dfc13661f469ebb5de9df5f2a7ec, type: 2}
-  sea: {fileID: 11400000, guid: bbcb89d0c346d47d080dcd4e384a24e0, type: 2}
+  sea: {fileID: 11400000, guid: fa83f3a88a54d4d3aa9fff9beb07900e, type: 2}
   cavern: {fileID: 11400000, guid: 8004b94658ef146d294274e676e09588, type: 2}
 --- !u!4 &428686910
 Transform:

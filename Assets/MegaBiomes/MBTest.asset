@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2b9e9491398d46cd94a4d6b929a5c03, type: 3}
   m_Name: MBTest
   m_EditorClassIdentifier: 
-  uid: 
-  megaBiomeName: 
-  snow: {fileID: 0}
-  plains: {fileID: 0}
+  uid: mb_test
+  megaBiomeName: Test
+  snow: {fileID: 11400000, guid: 10168efac44780b4c85aa893bd9af74c, type: 2}
+  plains: {fileID: 11400000, guid: 1d381cf937b9b92428090219acbb9a3e, type: 2}
   noiseScale: 0.1

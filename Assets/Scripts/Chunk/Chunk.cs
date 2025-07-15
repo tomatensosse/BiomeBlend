@@ -4,75 +4,41 @@ using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Chunk : MonoBehaviour
+public abstract class Chunk : MonoBehaviour
 {
     [Header("Chunk Parameters")]
     public Vector3Int chunkPosition;
-    public Biome biome;
 
     public float[,,] DensityValues => densityValues;
     protected float[,,] densityValues;
 
     protected ComputeBuffer densityBuffer;
 
-    public bool isDensityGenerated = false;
-    public bool isMeshGenerated = false;
+    protected bool isDensityGenerated = false;
+    protected bool isMeshGenerated = false;
 
-    protected Dictionary<Vector3Int, Chunk> neighborChunks = new Dictionary<Vector3Int, Chunk>();
-    protected Dictionary<Vector3Int, Biome> neighborBiomes = new Dictionary<Vector3Int, Biome>();
+    protected MeshFilter meshFilter;
+    protected MeshRenderer meshRenderer;
+    protected MeshCollider meshCollider;
 
-    protected List<Vector3Int> directions = new List<Vector3Int>
-    {
-        new Vector3Int(1, 0, 0), // Right
-        new Vector3Int(-1, 0, 0), // Left
-        new Vector3Int(0, 1, 0), // Up
-        new Vector3Int(0, -1, 0), // Down
-        new Vector3Int(0, 0, 1), // Forward
-        new Vector3Int(0, 0, -1), // Backward
+    //private int numPointsPerAxis => World.Data.worldGenSettings.numPointsPerAxis;
 
-        new Vector3Int(1, 1, 0), // Right Up
-        new Vector3Int(-1, 1, 0), // Left Up
-        new Vector3Int(1, -1, 0), // Right Down
-        new Vector3Int(-1, -1, 0), // Left Down
-
-        new Vector3Int(1, 0, 1), // Right Forward
-        new Vector3Int(-1, 0, 1), // Left Forward
-        new Vector3Int(1, 0, -1), // Right Backward
-        new Vector3Int(-1, 0, -1), // Left Backward
-        new Vector3Int(0, 1, 1), // Up Forward
-        new Vector3Int(0, -1, 1), // Down Forward
-        new Vector3Int(0, 1, -1), // Up Backward
-        new Vector3Int(0, -1, -1), // Down Backward
-
-        new Vector3Int(1, 1, 1), // Right Up Forward
-        new Vector3Int(-1, 1, 1), // Left Up Forward
-        new Vector3Int(1, -1, 1), // Right Down Forward
-        new Vector3Int(-1, -1, 1), // Left Down Forward
-
-        new Vector3Int(1, 1, -1), // Right Up Backward
-        new Vector3Int(-1, 1, -1), // Left Up Backward
-        new Vector3Int(1, -1, -1), // Right Down Backward
-        new Vector3Int(-1, -1, -1) // Left Down Backward
-    };
-
-    [Header("Components")]
-    [HideInInspector] public MeshFilter meshFilter;
-    MeshRenderer meshRenderer;
-    MeshCollider meshCollider;
+    private int numPointsPerAxis = DemoGenerator.Instance.numPointsPerAxis;
 
     void OnDestroy()
     {
         if (densityBuffer != null) densityBuffer.Release();
     }
 
-    public void Initialize()
+    public virtual void Initialize()
     {
         meshFilter = this.AddComponent<MeshFilter>();
         meshRenderer = this.AddComponent<MeshRenderer>();
         meshCollider = this.AddComponent<MeshCollider>();
     }
 
-    public virtual void GenerateDensity(bool showDensities = false) // Dont forget to release the density/points buffer for memory leaks
+    public abstract void GenerateDensity(bool showDensities = false);
+    /* // Dont forget to release the density/points buffer for memory leaks
     {
         densityBuffer = biome.biomeShader.GenerateDensity(transform.position);
 
@@ -85,8 +51,10 @@ public class Chunk : MonoBehaviour
 
         isDensityGenerated = true;
     }
+    */
 
-    public void GenerateMesh()
+    public abstract void GenerateMesh();
+    /*
     {
         Mesh mesh;
 
@@ -107,29 +75,19 @@ public class Chunk : MonoBehaviour
 
         isMeshGenerated = true;
     }
+    */
 
-    private void OnDrawGizmos()
+    protected void SaveDensities(ComputeBuffer densityBuffer)
     {
-        if (!Application.isPlaying)
-        {
-            return;
-        }
-
-        if (biome != null)
-        {
-            Gizmos.color = biome.biomeColor;
-        }
-
-        int chunkSize = World.Data.worldGenSettings.chunkSize;
-        Gizmos.DrawWireCube(transform.position, Vector3.one * chunkSize);
-    }
-
-    private void SaveDensities(ComputeBuffer densityBuffer)
-    {
-        int n = World.Data.worldGenSettings.numPointsPerAxis;
+        int n = numPointsPerAxis;
         densityValues = new float[n, n, n];
 
         Vector4[] flat = new Vector4[n * n * n];
+
+        Debug.Log("Count: " + densityBuffer.count);
+        Debug.Log("Stride: " + densityBuffer.stride);
+        Debug.Log("Flat Length: " + flat.Length);
+
         densityBuffer.GetData(flat);
 
         for (int x = 0; x < n; x++)
@@ -139,34 +97,6 @@ public class Chunk : MonoBehaviour
                 for (int z = 0; z < n; z++)
                 {
                     densityValues[x, y, z] = flat[x + y * n + z * n * n].w; // Assuming the density is stored in the w component
-                }
-            }
-        }
-    }
-
-    public void FindNeighbors()
-    {
-        neighborChunks.Clear();
-
-        foreach (var direction in directions)
-        {
-            Vector3Int neighborPosition = chunkPosition + direction;
-            if (ChunkGenerator.Chunks.TryGetValue(neighborPosition, out Chunk neighborChunk))
-            {
-                neighborChunks[neighborPosition] = neighborChunk;
-            }
-        }
-
-        neighborBiomes.Clear();
-
-        foreach (var direction in directions)
-        {
-            Vector3Int neighborPosition = chunkPosition + direction;
-            if (ChunkGenerator.Chunks.TryGetValue(neighborPosition, out Chunk neighborChunk))
-            {
-                if (neighborChunk.biome != null)
-                {
-                    neighborBiomes[neighborPosition] = neighborChunk.biome;
                 }
             }
         }

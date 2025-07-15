@@ -15,15 +15,30 @@ public abstract class BiomeShader
     protected List<ComputeBuffer> buffersToRelease = new List<ComputeBuffer>();
 
     protected ComputeBuffer offsetsBuffer;
-    protected int numPointsPerAxis;
-    protected int numThreadsPerAxis;
-    protected int threadGroupSize;
+
+    /*
+    private int seed => World.Data.seed;
+    private int numPoints => World.Data.worldGenSettings.numPoints;
+    private int boundsSize => World.Data.worldGenSettings.boundsSize;
+    private float pointSpacing => World.Data.worldGenSettings.pointSpacing;
+    private Vector3 worldSize => (Vector3)World.Data.worldGenSettings.worldSize;
+    private int numPointsPerAxis = World.Data.worldGenSettings.numPointsPerAxis;
+    private int numThreadsPerAxis => World.Data.worldGenSettings.numThreadsPerAxis;
+    */
+
+    private int seed => DemoGenerator.Instance.seed;
+    private int numPoints => DemoGenerator.Instance.numPoints;
+    private int boundsSize => DemoGenerator.Instance.chunkSize;
+    private float pointSpacing => DemoGenerator.Instance.pointSpacing;
+    private Vector3 worldSize => (Vector3)DemoGenerator.Instance.worldSize;
+    private int numPointsPerAxis => DemoGenerator.Instance.numPointsPerAxis;
+    private int numThreadsPerAxis => DemoGenerator.Instance.numThreadsPerAxisP;
 
     public void SetBaseParameters()
     {
-        shader.SetFloat("boundsSize", World.Data.worldGenSettings.boundsSize);
-        shader.SetFloat("spacing", World.Data.worldGenSettings.pointSpacing);
-        shader.SetVector("worldSize", (Vector3)World.Data.worldGenSettings.worldSize);
+        shader.SetFloat("boundsSize", boundsSize);
+        shader.SetFloat("spacing", pointSpacing);
+        shader.SetVector("worldSize", worldSize);
 
         shader.SetVector("offset", offset);
 
@@ -42,11 +57,7 @@ public abstract class BiomeShader
 
     public void GenerateDynamicParameters()
     {
-        numPointsPerAxis = World.Data.worldGenSettings.numPointsPerAxis;
-        threadGroupSize = World.Data.worldGenSettings.threadGroupSize;
-        numThreadsPerAxis = Mathf.CeilToInt(numPointsPerAxis / (float)threadGroupSize);
-
-        var prng = new System.Random(World.Data.seed);
+        var prng = new System.Random(seed);
         var offsets = new Vector3[numOctaves];
         float offsetRange = 1000;
         for (int i = 0; i < numOctaves; i++)
@@ -62,7 +73,7 @@ public abstract class BiomeShader
         this.offsetsBuffer = offsetsBuffer;
 
         // POINTS BUFFER IS IMPORTANT ; RETURNS THE DENSITIES
-        pointsBuffer = new ComputeBuffer(World.Data.worldGenSettings.numPoints, sizeof(float) * 4);
+        pointsBuffer = new ComputeBuffer(numPoints, sizeof(float) * 4);
     }
 
     public void Dispatch(Vector3 worldPositionOfChunk)
