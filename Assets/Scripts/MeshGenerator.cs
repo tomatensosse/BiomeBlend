@@ -4,7 +4,7 @@ using UnityEngine;
 public class MeshGenerator : MonoBehaviour
 {
     public static MeshGenerator Instance { get; private set; }
-    public static bool Ready => Instance._isReady;
+    public static bool IsReady => Instance._isReady;
 
     private bool _isReady = false;
 
@@ -45,7 +45,7 @@ public class MeshGenerator : MonoBehaviour
     private IEnumerator WaitAndCreateBuffers()
     {
         //yield return new WaitUntil(() => World.DataLoaded);
-        yield return new WaitUntil(() => DemoGenerator.Instance != null);
+        yield return new WaitUntil(() => DemoGenerator.IsReady);
 
         CreateBuffers();
     }

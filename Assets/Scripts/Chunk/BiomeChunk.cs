@@ -53,9 +53,9 @@ public class BiomeChunk : Chunk
 
         if (biome != null)
         {
-            Gizmos.color = Color.magenta;
+            Gizmos.color = biome.biomeColor;
         }
 
-        Gizmos.DrawWireCube(transform.position, Vector3.one * chunkSize);
+        Gizmos.DrawCube(transform.position, Vector3.one * (chunkSize - 2));
     }
 }

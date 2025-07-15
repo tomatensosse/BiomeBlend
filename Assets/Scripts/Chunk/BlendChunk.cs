@@ -42,6 +42,10 @@ public class BlendChunk : Chunk
     protected bool neighborsAvailable = false;
     protected bool blendComplete = false;
 
+    //private int chunkSize => World.Data.worldGenSettings.chunkSize;
+
+    private int chunkSize => DemoGenerator.Instance.chunkSize;
+
     public override void GenerateDensity(bool showDensities = false)
     {
         throw new System.NotImplementedException();
@@ -65,7 +69,7 @@ public class BlendChunk : Chunk
 
         if (neighborsAvailable)
         {
-            // blend the chunk
+            BlendGenerator.Instance.BlendChunk(this, neighborChunks);
         }
     }
 
@@ -81,5 +85,17 @@ public class BlendChunk : Chunk
                 neighborChunks[neighborPosition] = neighborChunk;
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.magenta;
+
+        Gizmos.DrawCube(transform.position, Vector3.one * (chunkSize - 2));
     }
 }

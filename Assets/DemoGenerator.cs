@@ -5,6 +5,9 @@ using UnityEngine;
 public class DemoGenerator : MonoBehaviour
 {
     public static DemoGenerator Instance { get; private set; }
+    public static bool IsReady => Instance._isReady;
+
+    private bool _isReady = false;
 
     protected int[,,] map = new int[5, 5, 5]
     {
@@ -79,32 +82,55 @@ public class DemoGenerator : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("World size: " + map.Length);
+
         GenerateConstants();
+
+        StartCoroutine(WaitAndGenerateWorld());
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            DeleteAllChunks();
+            GenerateWorld();
+        }
+    }
+
+    IEnumerator WaitAndGenerateWorld()
+    {
+        yield return new WaitUntil(() => MeshGenerator.IsReady);
+
         GenerateWorld();
     }
 
     private void GenerateConstants()
     {
-        numPoints = numPointsPerAxis ^ 3;
+        numPoints = numPointsPerAxis * numPointsPerAxis * numPointsPerAxis;
         numVoxelsPerAxis = numPointsPerAxis - 1;
-        numVoxels = numPointsPerAxis ^ 3;
+        numVoxels = numPointsPerAxis * numPointsPerAxis * numPointsPerAxis;
         maxTriangleCount = numVoxels * 5;
         numThreadsPerAxisP = Mathf.CeilToInt((float)numPointsPerAxis / threadGroupSize);
         numThreadsPerAxisV = Mathf.CeilToInt((float)numVoxelsPerAxis / threadGroupSize);
         boundsSize = chunkSize;
         pointSpacing = chunkSize / ((float)numPointsPerAxis - 1);
         worldSize = generateSize * chunkSize;
+
+        _isReady = true;
     }
 
     private void GenerateWorld()
     {
-        for (int x = 0; x < worldSize.x; x++)
+        for (int x = 0; x < generateSize.x; x++)
         {
-            for (int y = 0; y < worldSize.y; y++)
+            for (int y = 0; y < generateSize.y; y++)
             {
-                for (int z = 0; z < worldSize.z; z++)
+                for (int z = 0; z < generateSize.z; z++)
                 {
                     Vector3Int chunkPosition = new Vector3Int(x, y, z);
+
+                    Debug.Log("Generating chunk at position: " + chunkPosition);
 
                     int biomeIndex = map[x, y, z];
 
@@ -145,5 +171,13 @@ public class DemoGenerator : MonoBehaviour
         BlendChunk blendChunk = chunkObject.AddComponent<BlendChunk>();
         blendChunk.chunkPosition = chunkPosition;
         blendChunk.Initialize();
+    }
+
+    private void DeleteAllChunks()
+    {
+        foreach (var chunk in FindObjectsOfType<Chunk>())
+        {
+            Destroy(chunk.gameObject);
+        }
     }
 }

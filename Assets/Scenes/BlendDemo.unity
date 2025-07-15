@@ -318,13 +318,16 @@ MonoBehaviour:
   biome2: {fileID: 11400000, guid: 1d381cf937b9b92428090219acbb9a3e, type: 2}
   chunkSize: 8
   numPointsPerAxis: 4
-  worldSize: {x: 5, y: 5, z: 5}
+  generateSize: {x: 5, y: 5, z: 5}
+  seed: 0
   numPoints: 0
   numVoxelsPerAxis: 0
   numVoxels: 0
   maxTriangleCount: 0
-  numThreadsPerAxis: 0
+  numThreadsPerAxisP: 0
+  numThreadsPerAxisV: 0
   boundsSize: 0
+  worldSize: {x: 5, y: 5, z: 5}
   pointSpacing: 0
   threadGroupSize: 8
 --- !u!4 &1015171480
